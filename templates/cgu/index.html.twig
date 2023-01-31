@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CGU Ecommerce{% endblock %}
+
+{% block body %}
+  {{
+    include(
+      'partials/title_section.html.twig',
+      {
+        name: 'conditions générales '
+      }
+    )
+  }}
+
+<div class="container">
+    <h1 class="text-center">Condtions générales d'utilisation du site</h1>
+
+    <p class="text-justify">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Numquam veritatis odio voluptatem rem fugiat fuga quasi ipsa et cupiditate perferendis?</p>
+</div>
+{% endblock %}
