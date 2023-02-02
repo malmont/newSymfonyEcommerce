@@ -7,15 +7,19 @@ use App\Services\CartServices;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CheckOutController extends AbstractController
 {
     private $cartServices;
-
-    public function __construct(CartServices $cartServices)
-    {
+    private $session;
+    public function __construct(
+        CartServices $cartServices,
+        RequestStack $requestStack
+    ) {
         $this->cartServices = $cartServices;
+        $this->session = $requestStack->getSession();
     }
     #[Route('/checkout', name: 'app_check_out')]
     public function index(Request $request): Response
@@ -36,6 +40,9 @@ class CheckOutController extends AbstractController
                 'please add an address to your account without continuing!'
             );
             return $this->redirectToRoute('app_adress_new');
+        }
+        if($this->session->get('checkout_data')){
+            return $this->redirectToRoute('checkout_confirm');
         }
 
         $form = $this->createForm(CheckoutType::class, null, ['user' => $user]);
@@ -68,8 +75,17 @@ class CheckOutController extends AbstractController
         }
         $form = $this->createForm(CheckoutType::class, null, ['user' => $user]);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+        if (
+            ($form->isSubmitted() && $form->isValid()) ||
+            $this->session->get('checkout_data')
+        ) {
+            if ($this->session->get('checkout_data')) {
+                $data = $this->session->get('checkout_data');
+            } else {
+                $data = $form->getData();
+                $this->session->set('checkout_data', $data);
+            }
+
             $address = $data['address'];
             $carrier = $data['carrier'];
             $informations = $data['informations'];
@@ -81,6 +97,11 @@ class CheckOutController extends AbstractController
                 'checkout' => $form->createView(),
             ]);
         }
+        return $this->redirectToRoute('app_check_out');
+    }
+    #[Route('/checkout/edit', name: 'checkout_edit')]
+    public function checkoutEdit():Response{
+        $this->session->set('checkout_data',[]);
         return $this->redirectToRoute('app_check_out');
     }
 }
