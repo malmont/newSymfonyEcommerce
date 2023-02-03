@@ -33,7 +33,7 @@ class Cart
     private ?string $deleveryaddress = null;
 
     #[ORM\Column]
-    private ?bool $ispaid = null;
+    private ?bool $ispaid = false;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $moreinformations = null;

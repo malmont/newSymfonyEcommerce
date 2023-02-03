@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
-use App\Entity\Carrier;
 use App\Entity\Cart;
+use App\Entity\Order;
+use App\Entity\Carrier;
 use App\Entity\CartDetails;
+use App\Entity\OrderDetails;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrderServices
@@ -13,10 +15,43 @@ class OrderServices
     public function __construct(EntityManagerInterface $manager)
     {
         $this->manager = $manager;
+
     }
 
     public function createOrder($cart)
     {
+        
+        $order = new Order();
+        $order
+        ->setReference($cart->getReference())
+        ->setCarriername($cart->getCarriername())
+        ->setCarrierprice($cart->getCarrierprice())
+        ->setFullname($cart->getFullname())
+        ->setDeleveryaddress($cart->getDeleveryaddress())
+        ->setMoreinformations($cart->getMoreinformations())
+        ->setQuantity($cart->getQuantity())
+        ->setSubTotalHt($cart->getSubTotalHt())
+        ->setTaxe($cart->getTaxe())
+        ->setSubTotalTTC($cart->getSubTotalTTC())
+        ->setUserOrder($cart->getUserCart())
+        ->setCreatedAt($cart->getCreatedAt());
+        $this->manager->persist($order);
+
+        $products = $cart->getCaartDetails()->getVlaues();
+        foreach ($products as $cart_products) {
+            
+           $orderDetails = new OrderDetails();
+           $orderDetails->setOrders($order)
+                        ->setProductname($cart_products->getProductName())
+                        ->setProducprice($cart_products->getProductprice())
+                        ->setQuantity($cart_products->getQuantity())
+                        ->setSubTotalHT($cart_products->getSubTotalHT())
+                        ->setSubTotalTTC($cart_products->getSubTotalTTC())
+                        ->setTaxe($cart_products->getTaxe());
+            $this->manager->persist($orderDetails);            
+        }
+        $this->manager->flush();
+        return $order;
     }
 
     public function saveCart($data, $user)
@@ -30,7 +65,7 @@ class OrderServices
         $cart
             ->setReference($reference)
             ->setCarriername($carrier->getName())
-            ->setCarrierprice($carrier->getPrice())
+            ->setCarrierprice($carrier->getPrice()/100)
             ->setFullname($address->getFullname())
             ->setDeleveryaddress($address)
             ->setMoreinformations($informations)
