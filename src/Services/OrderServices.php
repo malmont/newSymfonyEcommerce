@@ -72,10 +72,7 @@ class OrderServices
             ->setQuantity($data['data']['quantity_cart'])
             ->setSubTotalHt($data['data']['subTotalHT'])
             ->setTaxe($data['data']['Taxe'])
-            ->setSubTotalHt(
-                $data['data']['subTotalTTC'] + $carrier->getPrice() / 100,
-                2
-            )
+            ->setSubTotalTTC($data['data']['subTotalTTC'] + $carrier->getPrice() / 100,2)
             ->setUserCart($user)
             ->setCreatedAt(new \DateTime());
         $this->manager->persist($cart);
@@ -99,6 +96,7 @@ class OrderServices
             $this->manager->persist($cartDetails);
             $cart_details_array[] = $cartDetails;
         }
+        
         $this->manager->flush();
         return $reference;
     }

@@ -27,9 +27,11 @@
       {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
-    {% block javascripts %}
-      {{ encore_entry_script_tags('app') }}
-    {% endblock %}
+    
+    {% block scriptStripe %}
+    <script src="https://js.stripe.com/v3/" ></script>
+    {% endblock scriptStripe %}
+    
   </head>
   <body>
   {% include "partials/header.html.twig" %}
@@ -52,5 +54,8 @@
     <script src="/assets/js/slick.min.js"></script>
     <script src="/assets/js/jquery.elevatezoom.js"></script>
     <script src="/assets/js/scripts.js"></script>
+    {% block javascripts %}
+     
+    {% endblock %}
   </body>
 </html>
