@@ -107,7 +107,9 @@
                         <div class="heading_s1">
                             <h4>Payment</h4>
                         </div>
+                        <form action="/create-checkout-session" method="POST">
    <button type="submit" id="checkout-button" class="btn btn-fill-out btn-block">Paid | ${{ cart.data.subTotalTTC + carrier.price/100}}</button>
+    </form>
                     </div>
                  
                 </div>
@@ -121,7 +123,7 @@
 {% endblock %}
 
 {% block javascripts %}
-<script type="text/javascript">
+{# <script type="text/javascript">
     var stripe = Stripe("sk_test_51MdZibGaPkli494EGcx7ZxIDOS8nhNXcdg6LpW7lZW2JD5T7A6j0QB59pFuBNzbU4r4limwc7pOwkUY9ThDvUCCk00LFaSG55N");
     var checkoutButton = document.getElementById("checkout-button");
 
@@ -144,5 +146,5 @@
         });
     });
 </script>
-    
+     #}
 {% endblock javascripts %}

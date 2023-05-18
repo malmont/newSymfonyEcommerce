@@ -6,13 +6,14 @@ use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use App\Services\CartServices;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class StripeStripeCheckoutSessionController extends AbstractController
 {
     #[Route('/create-checkout-session', name: 'create_checkout_session')]
-    public function index(CartServices $cartServices): JsonResponse
+    public function index(CartServices $cartServices)
     {
       $cart = $cartServices->getFullCart();
        Stripe::setApiKey('sk_test_51MdZibGaPkli494EGcx7ZxIDOS8nhNXcdg6LpW7lZW2JD5T7A6j0QB59pFuBNzbU4r4limwc7pOwkUY9ThDvUCCk00LFaSG55N');
@@ -29,23 +30,23 @@ class StripeStripeCheckoutSessionController extends AbstractController
              'unit_amount'=>$product->getPrice(),
              'product_data'=>[
                'name'=>$product->getName(),
-               'images'=>[$_ENV['YOUR_DOMAIN'].'/uploads/prodcuts/'.$product->getImage()]
+              //  'images'=>[$_ENV['YOUR_DOMAIN'].'/uploads/products/'.$product->getImage()]
              ],
            ],
            'quantity'=> $data_product['quantity']
          ];
        }
+     
        $checkout_session = Session::create([
          'payment_method_types'=>['card'],
          'line_items'=> $line_items,
           // 'price' => '{{PRICE_ID}}',
-          'quantity' => 1,
         'mode' => 'payment',
-        'success_url' => $_ENV['YOUR_DOMAIN'] . '/stripe-payment-succes',
-        'cancel_url' =>  $_ENV['YOUR_DOMAIN']. '/stripe-payment-cancel',
+        'success_url' => 'https://backend-strapi.online/trt-conseil/',
+        'cancel_url' =>  'https://backend-strapi.online/trt-conseil/',
       ]);
     
-      
-       return $this->json([ "id" =>$checkout_session->id]);
+     
+       return $this->redirect( $checkout_session->url,303);
     }
 }
