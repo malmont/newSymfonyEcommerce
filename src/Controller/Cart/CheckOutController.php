@@ -53,6 +53,7 @@ class CheckOutController extends AbstractController
             'checkout' => $form->createView(),
         ]);
     }
+
     #[Route('/checkout/confirm', name: 'checkout_confirm')]
     public function confirm(Request $request, OrderServices $orderServices): Response
     {
@@ -98,11 +99,13 @@ class CheckOutController extends AbstractController
                 'carrier' => $carrier,
                 'informations' => $informations,
                 'cart' => $cart,
+                'reference' => $reference,
                 'checkout' => $form->createView(),
             ]);
         }
         return $this->redirectToRoute('app_check_out');
     }
+
     #[Route('/checkout/edit', name: 'checkout_edit')]
     public function checkoutEdit():Response{
         $this->session->set('checkout_data',[]);

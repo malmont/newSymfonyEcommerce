@@ -107,7 +107,7 @@
                         <div class="heading_s1">
                             <h4>Payment</h4>
                         </div>
-                        <form action="/create-checkout-session" method="POST">
+                        <form action="/create-checkout-session/{{ reference }}" method="POST">
    <button type="submit" id="checkout-button" class="btn btn-fill-out btn-block">Paid | ${{ cart.data.subTotalTTC + carrier.price/100}}</button>
     </form>
                     </div>

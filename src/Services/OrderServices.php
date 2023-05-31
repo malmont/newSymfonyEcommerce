@@ -7,15 +7,17 @@ use App\Entity\Order;
 use App\Entity\Carrier;
 use App\Entity\CartDetails;
 use App\Entity\OrderDetails;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrderServices
 {
     private $manager;
-    public function __construct(EntityManagerInterface $manager)
+    private $repoProduct;
+    public function __construct(EntityManagerInterface $manager,ProductRepository $repoProduct)
     {
         $this->manager = $manager;
-
+        $this->repoProduct = $repoProduct;
     }
 
     public function createOrder($cart)
@@ -37,13 +39,13 @@ class OrderServices
         ->setCreatedAt($cart->getCreatedAt());
         $this->manager->persist($order);
 
-        $products = $cart->getCaartDetails()->getVlaues();
+        $products = $cart->getCartDetails()->getValues();
         foreach ($products as $cart_products) {
             
            $orderDetails = new OrderDetails();
            $orderDetails->setOrders($order)
                         ->setProductname($cart_products->getProductName())
-                        ->setProducprice($cart_products->getProductprice())
+                        ->setProducprice($cart_products->getProducprice())
                         ->setQuantity($cart_products->getQuantity())
                         ->setSubTotalHT($cart_products->getSubTotalHT())
                         ->setSubTotalTTC($cart_products->getSubTotalTTC())
@@ -52,6 +54,53 @@ class OrderServices
         }
         $this->manager->flush();
         return $order;
+    }
+
+    public function getLineItems($cart){
+        $cartDetails = $cart->getCartDetails();
+        $line_items = [];
+        foreach($cartDetails as $details){
+            $product = $this->repoProduct->findOneByName($details->getProductName());
+            $line_items[] = [
+                'price_data' =>[
+                  'currency' =>'usd',
+                  'unit_amount'=>$product->getPrice(),
+                  'product_data'=>[
+                    'name'=>$product->getName(),
+                   //  'images'=>[$_ENV['YOUR_DOMAIN'].'/uploads/products/'.$product->getImage()]
+                  ],
+                ],
+                'quantity'=> $details->getQuantity(),
+              ];
+            }
+              //taxe
+              $line_items[] = [
+                'price_data' =>[
+                  'currency' =>'usd',
+                  'unit_amount'=>$cart->getTaxe()*100,
+                  'product_data'=>[
+                    'name'=>"TVA(20%)",
+                   //  'images'=>[$_ENV['YOUR_DOMAIN'].'/uploads/products/'.$product->getImage()]
+                  ],
+                ],
+                'quantity'=> 1,
+              ];
+
+              //carrier
+
+              $line_items[] = [
+                'price_data' =>[
+                  'currency' =>'usd',
+                  'unit_amount'=>$cart->getCarrierprice()*100,
+                  'product_data'=>[
+                    'name'=>$cart->getCarriername(),
+                   //  'images'=>[$_ENV['YOUR_DOMAIN'].'/uploads/products/'.$product->getImage()]
+                  ],
+                ],
+                'quantity'=> 1,
+              ];              
+              return $line_items;
+       
     }
 
     public function saveCart($data, $user)
