@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} CheckOut Ecommerce!{% endblock %}
+
+{% block body %}
+ {{
+    include(
+      'partials/title_section.html.twig',
+      {
+        name: 'Details Order Ecommerce'
+      }
+    )
+  }}
+<div class="section">
+	<div class="container">
+        <div class="row">
+            <div> <strong>reference : </strong> {{order.reference}} </div>
+             <div> <strong>Date : </strong> {{order.createdAt}} </div>
+        </div>
+        {% for detail in order.orderDetails %}
+            <pre>
+                {{dump(detail)}}
+            </pre>
+            
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}
