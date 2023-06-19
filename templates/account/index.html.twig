@@ -111,6 +111,9 @@
                     </a> and <a href="javascript:void(0);" onclick="$('#account-detail-tab').trigger('click')">edit
                       your password and account details.</a>
                   </p>
+                  {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{path('admin')}}" target="_blank" class="btn btn-fill-out"> Acces backoffice</a>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -220,7 +223,7 @@
                   {% endfor %}
                 {% else %}
                   <p>
-                    Sory you hav'ent added an adress to your accoutn yet
+                    Sorry you haven't added an adress to your account yet
                   </p>
                 {% endif %}
               </div>
