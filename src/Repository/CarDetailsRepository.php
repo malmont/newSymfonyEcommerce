@@ -5,7 +5,7 @@ use App\Entity\CartDetails;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
+/*
  * @extends ServiceEntityRepository<CartDetails>
  *
  * @method CartDetails|null find($id, $lockMode = null, $lockVersion = null)
