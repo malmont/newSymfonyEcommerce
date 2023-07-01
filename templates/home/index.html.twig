@@ -5,7 +5,10 @@
 {% endblock %}
 
 {% block body %}
-  {{
+{% if homeSlider %}
+  {{ include("partials/home_slider.html.twig", {'slider':homeSlider}) }}
+{% else %}
+    {{
     include(
       'partials/title_section.html.twig',
       {
@@ -13,6 +16,8 @@
       }
     )
   }}
+{% endif %}
+
 
   <div class="container">
     <div class="section small_pt pb_70">

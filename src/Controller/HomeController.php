@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\HomeSliderRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,9 +12,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(ProductRepository $repoProduct): Response
+    public function index(ProductRepository $repoProduct,HomeSliderRepository $repoHomeSlider): Response
     {
         $products = $repoProduct->findAll();
+        $homeSlider = $repoHomeSlider->findby(['isDiplayed'=>true]);
         $productBestSeller = $repoProduct->findByisbestseller(1);
         $productSpecialOffer =$repoProduct->findByisspecialoffer(1);
         $productNewArrival = $repoProduct->findByisnewarrival(1);
@@ -25,6 +27,7 @@ class HomeController extends AbstractController
             'productSpecialOffer'=>$productSpecialOffer,
             'productNewArrival'=>$productNewArrival,
             'productFeatured'=>$productFeatured,
+            'homeSlider'=>$homeSlider
         ]);
     }
 
