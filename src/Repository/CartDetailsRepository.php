@@ -1,17 +1,20 @@
 <?php
 namespace App\Repository;
+
 use App\Entity\CartDetails;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/*
+/**
  * @extends ServiceEntityRepository<CartDetails>
  *
  * @method CartDetails|null find($id, $lockMode = null, $lockVersion = null)
- * @method CartDetails|null findOneBy(array $criteria, array $CartBy = null)
+ * @method CartDetails|null findOneBy(array $criteria, array $orderBy = null)
  * @method CartDetails[]    findAll()
- * @method CartDetails[]    findBy(array $criteria, array $CartBy = null, $limit = null, $offset = null)
+ * @method CartDetails[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
+
+
 class CartDetailsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
