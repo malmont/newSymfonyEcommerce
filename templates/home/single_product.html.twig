@@ -20,7 +20,7 @@
             <div class="col-lg-6 col-md-6 mb-4 mb-md-0">
               <div class="product-image">
                     <div class="product_img_box">
-                        <img id="product_img" src='/assets/uploads/products/{{product.image}}' data-zoom-image="assets/uploads/products{{product.image}}" alt="{{product.name}}" />
+                        <img id="product_img" src="{{ asset('assets/uploads/products/' ~ product.image) }}"data-zoom-image="{{ asset('assets/uploads/products/' ~ product.image) }}" alt="{{product.name}}" />
                         <a href="#" class="product_img_zoom" title="Zoom">
                             <span class="linearicons-zoom-in"></span>
                         </a>
