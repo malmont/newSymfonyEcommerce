@@ -63,6 +63,24 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    #[Route('api/register', name: 'register')]
+    public function registerApi(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): Response
+        {
+
+            $em = $doctrine->getManager();
+            $decoded = json_decode($request->getContent());
+            $email = $decoded->email;
+            $password= $decoded->plainPassword;
+            $user = new User();
+         
+            $user->setPlainPassword($password);
+            $user->setEmail($email);
+            $em->persist($user);
+            $em->flush();
+
+            return $this->json(['message' => 'Registered Successfully']);
+            }
+
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserRepository $userRepository): Response
     {
