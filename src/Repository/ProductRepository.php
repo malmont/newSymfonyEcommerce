@@ -51,10 +51,10 @@ class ProductRepository extends ServiceEntityRepository
             $query = $query->andWhere('p.price < '.$search->getMaxPrice()*100);
            
         }
-        if($search->getCategory()){
+        if($search->getCategories()){
             $query = $query->join('p.category', 'c')
                                     ->andWhere('c.id IN (:categories)')
-                                    ->setParameter('categories', $search->getCategory());
+                                    ->setParameter('categories', $search->getCategories());
            
         }
         if($search->getTags()){

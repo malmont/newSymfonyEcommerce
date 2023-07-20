@@ -122,29 +122,3 @@
 
 {% endblock %}
 
-{% block javascripts %}
-{# <script type="text/javascript">
-    var stripe = Stripe("sk_test_51MdZibGaPkli494EGcx7ZxIDOS8nhNXcdg6LpW7lZW2JD5T7A6j0QB59pFuBNzbU4r4limwc7pOwkUY9ThDvUCCk00LFaSG55N");
-    var checkoutButton = document.getElementById("checkout-button");
-
-    checkoutButton.addEventListener("click", function(){
-        fetch("/create-checkout-session",{
-            method:"POST"
-        })
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(session){
-            return stripe.redirecToCheckout({sessionId:session.id});
-        })
-        .then(function(result){
-            if(result.error){
-                alert(result.error.message);
-            }
-        }).catch(function(error){
-            console.error("Error:" , error);
-        });
-    });
-</script>
-     #}
-{% endblock javascripts %}
