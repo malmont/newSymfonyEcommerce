@@ -26,11 +26,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
+
+    private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
     private ?string $username = null;
@@ -70,11 +69,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function getFullName(): string
-    {
-        return "{$this->firstname} {$this->lastname}";
-    }
-    
     public function setEmail(string $email): self
     {
         $this->email = $email;
@@ -82,23 +76,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -111,9 +96,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): string
     {
         return $this->password;
@@ -126,13 +108,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getUsername(): ?string
@@ -183,9 +173,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Adress>
-     */
     public function getAdresses(): Collection
     {
         return $this->adresses;
@@ -194,7 +181,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addAdress(Adress $adress): self
     {
         if (!$this->adresses->contains($adress)) {
-            $this->adresses->add($adress);
+            $this->adresses[] = $adress;
             $adress->setUserAdress($this);
         }
 
@@ -204,7 +191,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeAdress(Adress $adress): self
     {
         if ($this->adresses->removeElement($adress)) {
-            // set the owning side to null (unless already changed)
             if ($adress->getUserAdress() === $this) {
                 $adress->setUserAdress(null);
             }
@@ -213,68 +199,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-//     public function __toString(): string
-// {
-//     return $this->getUsername();  // or some string field in your Vegetal Entity 
-// }
-
-/**
- * @return Collection<int, ReviewsProduct>
- */
-public function getReviewsProducts(): Collection
-{
-    return $this->reviewsProducts;
-}
-
-public function addReviewsProduct(ReviewsProduct $reviewsProduct): self
-{
-    if (!$this->reviewsProducts->contains($reviewsProduct)) {
-        $this->reviewsProducts->add($reviewsProduct);
-        $reviewsProduct->setUserReview($this);
+    public function getReviewsProducts(): Collection
+    {
+        return $this->reviewsProducts;
     }
 
-    return $this;
-}
-
-public function removeReviewsProduct(ReviewsProduct $reviewsProduct): self
-{
-    if ($this->reviewsProducts->removeElement($reviewsProduct)) {
-        // set the owning side to null (unless already changed)
-        if ($reviewsProduct->getUserReview() === $this) {
-            $reviewsProduct->setUserReview(null);
+    public function addReviewsProduct(ReviewsProduct $reviewsProduct): self
+    {
+        if (!$this->reviewsProducts->contains($reviewsProduct)) {
+            $this->reviewsProducts[] = $reviewsProduct;
+            $reviewsProduct->setUserReview($this);
         }
+
+        return $this;
     }
 
-    return $this;
-}
-
-/**
- * @return Collection<int, Order>
- */
-public function getOrders(): Collection
-{
-    return $this->orders;
-}
-
-public function addOrder(Order $order): self
-{
-    if (!$this->orders->contains($order)) {
-        $this->orders->add($order);
-        $order->setUserOrder($this);
-    }
-
-    return $this;
-}
-
-public function removeOrder(Order $order): self
-{
-    if ($this->orders->removeElement($order)) {
-        // set the owning side to null (unless already changed)
-        if ($order->getUserOrder() === $this) {
-            $order->setUserOrder(null);
+    public function removeReviewsProduct(ReviewsProduct $reviewsProduct): self
+    {
+        if ($this->reviewsProducts->removeElement($reviewsProduct)) {
+            if ($reviewsProduct->getUserReview() === $this) {
+                $reviewsProduct->setUserReview(null);
+            }
         }
+
+        return $this;
     }
 
-    return $this;
-}
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setUserOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->removeElement($order)) {
+            if ($order->getUserOrder() === $this) {
+                $order->setUserOrder(null);
+            }
+        }
+
+        return $this;
+    }
 }

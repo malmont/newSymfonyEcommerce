@@ -9,6 +9,8 @@ use App\Entity\Contact;
 use App\Entity\Product;
 use App\Entity\Categories;
 use App\Entity\HomeSlider;
+use App\Entity\Collections;
+use App\Entity\User;
 use App\Controller\Admin\OrderCrudController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,5 +45,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Carrier', 'fas fa-truck', Carrier::class);
         yield MenuItem::linkToCrud('Home Slider', 'fas fa-images', HomeSlider::class);
         yield MenuItem::linkToCrud('Contact', 'fas fa-envelope', Contact::class);
+        yield MenuItem::linkToCrud('Users', 'fas fa-user', User::class);
+        yield MenuItem::linkToCrud('Collections', 'fas fa-archive', Collections::class); // Ajoutez cette ligne
     }
 }
