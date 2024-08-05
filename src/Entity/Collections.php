@@ -34,6 +34,9 @@ class Collections
     #[ORM\Column(length: 255)]
     private ?string $photoCollection = null;
 
+    #[ORM\ManyToOne(inversedBy: 'collections')]
+    private ?User $userCollections = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +110,18 @@ class Collections
     public function setPhotoCollection(string $photoCollection): static
     {
         $this->photoCollection = $photoCollection;
+
+        return $this;
+    }
+
+    public function getUserCollections(): ?User
+    {
+        return $this->userCollections;
+    }
+
+    public function setUserCollections(?User $userCollections): static
+    {
+        $this->userCollections = $userCollections;
 
         return $this;
     }

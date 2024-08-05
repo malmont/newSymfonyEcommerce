@@ -52,11 +52,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userOrder', targetEntity: Order::class)]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, Collections>
+     */
+    #[ORM\OneToMany(mappedBy: 'userCollections', targetEntity: Collections::class)]
+    private Collection $collections;
+
     public function __construct()
     {
         $this->adresses = new ArrayCollection();
         $this->reviewsProducts = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->collections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -249,5 +256,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Collections>
+     */
+    public function getCollections(): Collection
+    {
+        return $this->collections;
+    }
+
+    public function addCollection(Collections $collection): static
+    {
+        if (!$this->collections->contains($collection)) {
+            $this->collections->add($collection);
+            $collection->setUserCollections($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCollection(Collections $collection): static
+    {
+        if ($this->collections->removeElement($collection)) {
+            // set the owning side to null (unless already changed)
+            if ($collection->getUserCollections() === $this) {
+                $collection->setUserCollections(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->firstname . ' ' . $this->lastname; // Ou toute autre combinaison de champs souhaitée
     }
 }
