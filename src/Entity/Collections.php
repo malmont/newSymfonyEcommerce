@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CollectionsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,6 +38,17 @@ class Collections
 
     #[ORM\ManyToOne(inversedBy: 'collections')]
     private ?User $userCollections = null;
+
+    /**
+     * @var Collection<int, Commande>
+     */
+    #[ORM\OneToMany(mappedBy: 'Collections', targetEntity: Commande::class)]
+    private Collection $CollectionCommande;
+
+    public function __construct()
+    {
+        $this->CollectionCommande = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -124,5 +137,39 @@ class Collections
         $this->userCollections = $userCollections;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCollectionCommande(): Collection
+    {
+        return $this->CollectionCommande;
+    }
+
+    public function addCollectionCommande(Commande $collectionCommande): static
+    {
+        if (!$this->CollectionCommande->contains($collectionCommande)) {
+            $this->CollectionCommande->add($collectionCommande);
+            $collectionCommande->setCollections($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCollectionCommande(Commande $collectionCommande): static
+    {
+        if ($this->CollectionCommande->removeElement($collectionCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($collectionCommande->getCollections() === $this) {
+                $collectionCommande->setCollections(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->nomCollection;
     }
 }
